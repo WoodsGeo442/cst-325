@@ -1,6 +1,9 @@
 ﻿  Source.cpp
-C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(7,9): error C2065: 'window': undeclared identifier
-C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(25,22): error C2660: 'render_scene': function does not take 1 arguments
-C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(12,6): message : see declaration of 'render_scene'
-C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(29,10): error C2660: 'cleanup': function does not take 0 arguments
-C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(15,6): message : see declaration of 'cleanup'
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(163,12): error C2562: 'cleanup': 'void' function returning a value
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(160): message : see declaration of 'cleanup'
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(170,16): error C2660: 'load_geometry': function does not take 0 arguments
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(108,6): message : see declaration of 'load_geometry'
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(173,22): error C2660: 'render_scene': function does not take 1 arguments
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(146,6): message : see declaration of 'render_scene'
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(177,10): error C2660: 'cleanup': function does not take 0 arguments
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(160,6): message : see declaration of 'cleanup'
