@@ -1,6 +1,13 @@
 ﻿  Source.cpp
-C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(7,9): error C2065: 'window': undeclared identifier
-C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(25,22): error C2660: 'render_scene': function does not take 1 arguments
-C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(12,6): message : see declaration of 'render_scene'
-C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(29,10): error C2660: 'cleanup': function does not take 0 arguments
-C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(15,6): message : see declaration of 'cleanup'
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(9,8): error C2039: 'cout': is not a member of 'std'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stddef.h(19): message : see declaration of 'std'
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(9,13): error C2065: 'cout': undeclared identifier
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(10,3): error C3861: 'abort': identifier not found
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(21,8): error C2039: 'cout': is not a member of 'std'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stddef.h(19): message : see declaration of 'std'
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(21,13): error C2065: 'cout': undeclared identifier
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(23,3): error C3861: 'abort': identifier not found
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(52,22): error C2660: 'render_scene': function does not take 1 arguments
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(39,6): message : see declaration of 'render_scene'
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(56,10): error C2660: 'cleanup': function does not take 0 arguments
+C:\Users\woods\Documents\GitHub\cst-325\Project1\Project1\Source.cpp(42,6): message : see declaration of 'cleanup'
