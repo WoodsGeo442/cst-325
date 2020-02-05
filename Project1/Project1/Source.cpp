@@ -113,6 +113,9 @@ void load_geometry(GLuint* vao, GLuint* vbo, GLsizei* vertex_count) {
 			0.0f, 0.5f, 0.0f, // top center
 			0.5f, -0.5f, 0.0f, // bottom right
 			-0.5f, -0.5f, 0.0f, // bottom left
+			0.5f, 0.0f, 0.0f,
+			-0.5f, 0.0f, 0.0f,
+			0.0f, -1.0f, 0.0f,
 		};
 		*vertex_count = sizeof(vertices) / sizeof(vertices[0]);
 
@@ -145,7 +148,7 @@ void load_geometry(GLuint* vao, GLuint* vbo, GLsizei* vertex_count) {
 
 void render_scene(GLFWwindow* window, GLsizei vertex_count) {
 	// Set the clear color
-	glClearColor(0.7f, 0.0f, 0.5f, 1.0f);
+	glClearColor(0.5f, 0.0f, 0.0f, 1.0f);
 
 	// Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -158,22 +161,22 @@ void render_scene(GLFWwindow* window, GLsizei vertex_count) {
 }
 
 void cleanup(GLFWwindow* window) {
-	if (!window){
-		glfwTerminate();
-		return -1;
-	}
+	glfwTerminate();
 }
 
 int main(void) {
+	GLuint vao;
+	GLuint vbo;
+	GLsizei vertex_count;
 	GLFWwindow* window = initialize_glfw();
 	compile_shader();
-	load_geometry();
+	load_geometry(&vao, &vbo, &vertex_count);
 
 	while (!glfwWindowShouldClose(window)) {
-		render_scene(window);
+		render_scene(window, vertex_count);
 		glfwPollEvents();
 	}
 
-	cleanup();
+	cleanup(window);
 	return 0;
 }
