@@ -109,12 +109,12 @@ void load_geometry(GLuint* vao, GLuint* vbo, GLsizei* vertex_count) {
 	{
 		// Generate the data on the CPU
 		GLfloat vertices[] = {
-			0.0f, 0.5f, 0.0f, // top center
-			0.5f, -0.5f, 0.0f, // bottom right
-			-0.5f, -0.5f, 0.0f, // bottom left
-			0.5f, 0.0f, 0.0f,
-			-0.5f, 0.0f, 0.0f,
-			0.0f, -1.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, // top center
+			0.5f, 0.0f, 0.0f, // bottom right
+			-0.5f, 0.0f, 0.0f, // bottom left
+			0.5f, 0.5f, 0.0f,
+			-0.5f, 0.5f, 0.0f,
+			0.0f, -0.5f, 0.0f,
 		};
 		*vertex_count = sizeof(vertices) / sizeof(vertices[0]);
 
