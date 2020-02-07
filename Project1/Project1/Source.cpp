@@ -19,7 +19,7 @@ GLFWwindow* initialize_glfw() {
 	// Create the window
 	GLFWwindow* window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
 	if (!window) {
-		std::cout << "glfwCreateWindow(...) failed\n";
+		cout << "glfwCreateWindow(...) failed\n";
 		glfwTerminate();
 		abort();
 	}
@@ -64,7 +64,7 @@ GLuint compile_shader() {
 	glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(vertex_shader, MAX_ERROR_LEN, NULL, infoLog);
-		std::cout << "vertex shader compilation failed:\n" << infoLog << std::endl;
+		cout << "vertex shader compilation failed:\n" << infoLog << std::endl;
 		abort();
 	}
 
@@ -77,7 +77,7 @@ GLuint compile_shader() {
 	glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(fragment_shader, MAX_ERROR_LEN, NULL, infoLog);
-		std::cout << "fragment shader compilation failed:\n" << infoLog << std::endl;
+		cout << "fragment shader compilation failed:\n" << infoLog << std::endl;
 		abort();
 	}
 
@@ -91,7 +91,7 @@ GLuint compile_shader() {
 	glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
 	if (!success) {
 		glGetProgramInfoLog(shader_program, MAX_ERROR_LEN, NULL, infoLog);
-		std::cout << "shader linker failed:\n" << infoLog << std::endl;
+		cout << "shader linker failed:\n" << infoLog << std::endl;
 		abort();
 	}
 	glDeleteShader(vertex_shader);
