@@ -1,4 +1,6 @@
 #define GLEW_STATIC
+#define SCREEN_WIDTH
+#define SCREEN_HEIGHT
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -126,6 +128,7 @@ void load_geometry(GLuint* vao, GLuint* vbo, GLsizei* vertex_count) {
 			glBindBuffer(GL_ARRAY_BUFFER, *vbo);
 			// Copy all our data to the current buffer!
 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
 		}
 	}
 
@@ -142,6 +145,8 @@ void load_geometry(GLuint* vao, GLuint* vbo, GLsizei* vertex_count) {
 
 		// Enable the 0th vertex attrib array!
 		glEnableVertexAttribArray(0);
+
+		
 	}
 }
 
@@ -157,6 +162,8 @@ void render_scene(GLFWwindow* window, GLsizei vertex_count) {
 
 	// Display the results on screen
 	glfwSwapBuffers(window);
+
+	glViewport(0, 0, 600, 600);
 }
 
 void cleanup(GLFWwindow* window) {
