@@ -1,0 +1,10 @@
+Name: Geoffrey Woods
+Class: CST 325
+
+Objectives completed:
+1. I managed to make the triangle.
+2. I added another triangle to make a square.
+3. I was able to implement glviewport but I couldn't get the shape to move.
+
+Render A Triangle (6pts) - done
+A Different Shape (2pts) - done
