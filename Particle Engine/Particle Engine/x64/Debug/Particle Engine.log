@@ -1,0 +1,5 @@
+﻿  Particle Engine.cpp
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\x64\Debug\vc120.pdb'; linking object as if no debug info
+  Particle Engine.vcxproj -> C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\x64\Debug\Particle Engine.exe
