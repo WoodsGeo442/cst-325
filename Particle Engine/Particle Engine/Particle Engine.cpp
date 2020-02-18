@@ -150,7 +150,7 @@ void load_geometry(GLuint* vao, GLuint* vbo, GLsizei* vertex_count) {
 
 void render_scene(GLFWwindow* window, GLsizei vertex_count) {
 	// Set the clear color
-	glClearColor(0.5f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.7f, 0.0f, 0.5f, 1.0f);
 
 	// Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT);
