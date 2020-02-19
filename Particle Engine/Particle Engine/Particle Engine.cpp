@@ -5,8 +5,35 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <vector>
 
 using namespace std;
+
+struct randomthing {
+	float x;
+	float y;
+
+	float r;
+	float g;
+	float b;
+	float a;
+
+	float xspeed = 0.01;
+	float yspeed = 0.01;
+	float yacc = -0.0002;
+
+	randomthing(float X, float Y) {
+		x = X;
+		y = Y;
+		this->xspeed = 0.01 * (float)rand() / (float)RAND_MAX;
+		this->yspeed = 0.01 * (float)rand() / (float)RAND_MAX;
+		this->a = 1;
+		this->r = 0.4f;
+		this->b = 0.1f;
+		this->g = 0.0f;
+	}
+};
+
 GLFWwindow* initialize_glfw() {
 	// Initialize the context
 	if (!glfwInit()) {
@@ -43,14 +70,17 @@ GLuint compile_shader() {
 	const char* vertex_shader_src =
 		"#version 330 core\n"
 		"layout (location = 0) in vec3 pos;\n"
+		"uniform vec2 offset;\n"
 		"void main() {\n"
-		"   gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);\n"
+		"   vec2 scale = vec2(0.05, 0.05);\n"
+		"   gl_Position = vec4(scale.x * pos.x + offset.x, scale.y * pos.y + offset.y, pos.z, 1.0);\n"
 		"}\n";
 	const char* fragment_shader_src =
 		"#version 330 core\n"
 		"out vec4 FragColor;\n"
+		"uniform vec4 color;\n"
 		"void main() {\n"
-		"   FragColor = vec4(0.0f, 0.0f, 1.0f, 1.0f);\n"
+		"   FragColor = color;\n"
 		"}\n";
 
 	// Define some vars
@@ -148,15 +178,30 @@ void load_geometry(GLuint* vao, GLuint* vbo, GLsizei* vertex_count) {
 	}
 }
 
-void render_scene(GLFWwindow* window, GLsizei vertex_count) {
+void render_scene(GLFWwindow* window, GLsizei vertex_count, GLuint shader_program, vector<randomthing> particles) {
 	// Set the clear color
 	glClearColor(0.7f, 0.0f, 0.5f, 1.0f);
 
 	// Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT);
+	
+	for (int i = 0; i < particles.size(); i++) {
+		
+		
 
-	// Draw the current vao/vbo, with the current shader
-	glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+		//set color
+		GLint color_location = glGetUniformLocation(shader_program, "color");
+		glUniform4f(color_location, 0.4f, 0.1f, 0.0f, 1.0f);
+
+		//position
+		GLint offset_location = glGetUniformLocation(shader_program, "offset");
+		glUniform2f(offset_location, particles[i].x, particles[i].y);
+		//cout << offset_location << " " << particles[i].x << " " << particles[i].y << "\n";
+
+		// Draw the current vao/vbo, with the current shader
+		glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+	}
+	
 
 	// Display the results on screen
 	glfwSwapBuffers(window);
@@ -171,11 +216,48 @@ int main(void) {
 	GLuint vbo;
 	GLsizei vertex_count;
 	GLFWwindow* window = initialize_glfw();
-	compile_shader();
+	GLuint shader_program = compile_shader();
+	vector<randomthing> particles;
+	for (int i = 0; i < 100; i++) {
+		particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+	}
+
+	/*for (int i = 0; i < 100; i++) {
+		particles[i].x = 0.2f * (i % 10) - 0.6;
+		particles[i].y = 0.1f * (i / 10);
+	}*/
 	load_geometry(&vao, &vbo, &vertex_count);
 
 	while (!glfwWindowShouldClose(window)) {
-		render_scene(window, vertex_count);
+		for (int i = 0; i < particles.size(); i++) {
+			particles[i].yspeed += particles[i].yacc;
+			particles[i].x += particles[i].xspeed;
+			particles[i].y += particles[i].yspeed;
+			if (particles[i].x > 1.0 ) {
+				particles[i].xspeed = 0.9 * -abs(particles[i].xspeed);
+				particles[i].a -= 0.2;
+				particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+				
+			} 
+			if (particles[i].x < -1.0) {
+				particles[i].xspeed = 0.9 * abs(particles[i].xspeed);
+				particles[i].a -= 0.2;
+				particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+			}
+			if (particles[i].y > 1.0) {
+				particles[i].yspeed = 0.9 * -abs(particles[i].yspeed);
+				particles[i].a -= 0.2;
+				particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+				
+			}
+			if (particles[i].y < -1.0) {
+				particles[i].yspeed = 0.9 * abs(particles[i].yspeed);
+				particles[i].a -= 0.2;
+				particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+			}
+		}
+		// add pushback
+		render_scene(window, vertex_count, shader_program, particles);
 		glfwPollEvents();
 	}
 
