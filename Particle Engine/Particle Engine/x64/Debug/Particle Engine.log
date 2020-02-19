@@ -1,7 +1,7 @@
 ﻿  Particle Engine.cpp
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(21,21): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(22,21): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(23,22): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(21,20): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(22,20): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(23,21): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(28,39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(29,39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(237,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data

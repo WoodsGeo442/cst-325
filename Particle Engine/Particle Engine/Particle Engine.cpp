@@ -20,7 +20,7 @@ struct randomthing {
 
 	float xspeed = 0.01;
 	float yspeed = 0.01;
-	float yacc = -0.0002;
+	float yacc= -0.0002;
 
 	randomthing(float X, float Y) {
 		x = X;
@@ -218,7 +218,7 @@ int main(void) {
 	GLFWwindow* window = initialize_glfw();
 	GLuint shader_program = compile_shader();
 	vector<randomthing> particles;
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 1; i++) {
 		particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
 	}
 
