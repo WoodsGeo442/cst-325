@@ -18,15 +18,15 @@ struct randomthing {
 	float b;
 	float a;
 
-	float xspeed = 0.01;
-	float yspeed = 0.01;
-	float yacc= -0.0002;
+	float xspeed = 0.00005;
+	float yspeed = 0.00003;
+	float yacc= -0.0000001;
 
 	randomthing(float X, float Y) {
 		x = X;
 		y = Y;
-		this->xspeed = 0.01 * (float)rand() / (float)RAND_MAX;
-		this->yspeed = 0.01 * (float)rand() / (float)RAND_MAX;
+		this->xspeed = 0.001 * (float)rand() / (float)RAND_MAX;
+		this->yspeed = 0.001 * (float)rand() / (float)RAND_MAX;
 		this->a = 1;
 		this->r = 0.4f;
 		this->b = 0.1f;
@@ -79,7 +79,10 @@ GLuint compile_shader() {
 		"#version 330 core\n"
 		"out vec4 FragColor;\n"
 		"uniform vec4 color;\n"
+		//"uniform sampler2D tex;\n"
 		"void main() {\n"
+		//"   vex2 uvs=vec2(gl_FragCoord)/100.0;\n"
+		//"   FragColor=texture(tex,uvs);\n"
 		"   FragColor = color;\n"
 		"}\n";
 
@@ -186,17 +189,14 @@ void render_scene(GLFWwindow* window, GLsizei vertex_count, GLuint shader_progra
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 	for (int i = 0; i < particles.size(); i++) {
-		
-		
 
 		//set color
 		GLint color_location = glGetUniformLocation(shader_program, "color");
-		glUniform4f(color_location, 0.4f, 0.1f, 0.0f, 1.0f);
+		glUniform4f(color_location, 0.0f, 0.0f, 0.0f, 1.0f);
 
 		//position
 		GLint offset_location = glGetUniformLocation(shader_program, "offset");
 		glUniform2f(offset_location, particles[i].x, particles[i].y);
-		//cout << offset_location << " " << particles[i].x << " " << particles[i].y << "\n";
 
 		// Draw the current vao/vbo, with the current shader
 		glDrawArrays(GL_TRIANGLES, 0, vertex_count);
@@ -215,17 +215,14 @@ int main(void) {
 	GLuint vao;
 	GLuint vbo;
 	GLsizei vertex_count;
+	vector<randomthing> particles;
 	GLFWwindow* window = initialize_glfw();
 	GLuint shader_program = compile_shader();
-	vector<randomthing> particles;
+	
 	for (int i = 0; i < 1; i++) {
 		particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
 	}
 
-	/*for (int i = 0; i < 100; i++) {
-		particles[i].x = 0.2f * (i % 10) - 0.6;
-		particles[i].y = 0.1f * (i / 10);
-	}*/
 	load_geometry(&vao, &vbo, &vertex_count);
 
 	while (!glfwWindowShouldClose(window)) {
@@ -235,25 +232,25 @@ int main(void) {
 			particles[i].y += particles[i].yspeed;
 			if (particles[i].x > 1.0 ) {
 				particles[i].xspeed = 0.9 * -abs(particles[i].xspeed);
-				particles[i].a -= 0.2;
-				particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+				//particles[i].a -= 0.2;
+				//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
 				
 			} 
 			if (particles[i].x < -1.0) {
 				particles[i].xspeed = 0.9 * abs(particles[i].xspeed);
-				particles[i].a -= 0.2;
-				particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+				//particles[i].a -= 0.2;
+				//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
 			}
 			if (particles[i].y > 1.0) {
 				particles[i].yspeed = 0.9 * -abs(particles[i].yspeed);
-				particles[i].a -= 0.2;
-				particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+				//particles[i].a -= 0.2;
+				//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
 				
 			}
 			if (particles[i].y < -1.0) {
 				particles[i].yspeed = 0.9 * abs(particles[i].yspeed);
-				particles[i].a -= 0.2;
-				particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+				//particles[i].a -= 0.2;
+				//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
 			}
 		}
 		// add pushback
