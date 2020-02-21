@@ -18,21 +18,25 @@ struct randomthing {
 	float b;
 	float a;
 
-	float xspeed = 0.00005;
-	float yspeed = 0.00003;
-	float yacc= -0.0000001;
+	float xspeed = 0.1;
+	float yspeed = 0.1;
+	float yacc= -0.5;
 
 	randomthing(float X, float Y) {
 		x = X;
 		y = Y;
-		this->xspeed = 0.001 * (float)rand() / (float)RAND_MAX;
-		this->yspeed = 0.001 * (float)rand() / (float)RAND_MAX;
+		this->xspeed = 1.5 * (float)rand() / (float)RAND_MAX;
+		this->yspeed = 1.5 * (float)rand() / (float)RAND_MAX;
 		this->a = 1;
 		this->r = 0.4f;
 		this->b = 0.1f;
 		this->g = 0.0f;
 	}
 };
+
+//GLuint load_textures() {
+//
+//}
 
 GLFWwindow* initialize_glfw() {
 	// Initialize the context
@@ -47,7 +51,7 @@ GLFWwindow* initialize_glfw() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Create the window
-	GLFWwindow* window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(640, 480, "Particle Engine - Geoffrey Woods", NULL, NULL);
 	if (!window) {
 		cout << "glfwCreateWindow(...) failed\n";
 		glfwTerminate();
@@ -79,11 +83,11 @@ GLuint compile_shader() {
 		"#version 330 core\n"
 		"out vec4 FragColor;\n"
 		"uniform vec4 color;\n"
-		//"uniform sampler2D tex;\n"
+		"uniform sampler2D tex;\n"
 		"void main() {\n"
-		//"   vex2 uvs=vec2(gl_FragCoord)/100.0;\n"
-		//"   FragColor=texture(tex,uvs);\n"
-		"   FragColor = color;\n"
+		"   vec2 uvs=vec2(gl_FragCoord)/100.0;\n"
+		"   FragColor=texture(tex,uvs);\n"
+		//"   FragColor = color;\n"
 		"}\n";
 
 	// Define some vars
@@ -207,7 +211,11 @@ void render_scene(GLFWwindow* window, GLsizei vertex_count, GLuint shader_progra
 	glfwSwapBuffers(window);
 }
 
-void cleanup(GLFWwindow* window) {
+void cleanup(GLFWwindow* window/*, GLuint *shader_program, GLuint texture, GLuint vao, GLuint vbo*/) {
+	/*glDeleteProgram(*shader_program);
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
+	glDeleteTextures(1, &texture);*/
 	glfwTerminate();
 }
 
@@ -218,21 +226,28 @@ int main(void) {
 	vector<randomthing> particles;
 	GLFWwindow* window = initialize_glfw();
 	GLuint shader_program = compile_shader();
+	//GLuint texture = load_texture();
+	float time = 0;
+	float oldtime = 0;
 	
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < 100; i++) {
 		particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
 	}
 
 	load_geometry(&vao, &vbo, &vertex_count);
 
 	while (!glfwWindowShouldClose(window)) {
+		time = glfwGetTime();
+		float dt = time - oldtime;
+		//cout << dt << endl;
+		
 		for (int i = 0; i < particles.size(); i++) {
-			particles[i].yspeed += particles[i].yacc;
-			particles[i].x += particles[i].xspeed;
-			particles[i].y += particles[i].yspeed;
+			particles[i].yspeed += particles[i].yacc * dt;
+			particles[i].x += particles[i].xspeed * dt;
+			particles[i].y += particles[i].yspeed * dt;
 			if (particles[i].x > 1.0 ) {
 				particles[i].xspeed = 0.9 * -abs(particles[i].xspeed);
-				//particles[i].a -= 0.2;
+				//particles[i].a -= 0.5;
 				//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
 				
 			} 
@@ -254,7 +269,9 @@ int main(void) {
 			}
 		}
 		// add pushback
+		
 		render_scene(window, vertex_count, shader_program, particles);
+		oldtime = time;
 		glfwPollEvents();
 	}
 

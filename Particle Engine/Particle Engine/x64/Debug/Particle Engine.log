@@ -1,11 +1,11 @@
 ﻿  Particle Engine.cpp
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(21,24): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(22,24): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(23,24): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(28,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(29,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(234,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(240,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(245,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(251,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(21,20): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(22,20): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(28,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(29,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(240,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(249,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(255,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(260,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(266,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   Particle Engine.vcxproj -> C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\x64\Debug\Particle Engine.exe
