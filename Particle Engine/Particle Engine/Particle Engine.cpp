@@ -89,7 +89,7 @@ GLuint compile_shader() {
 		"out vec2 Texcoords;\n"
 		"void main() {\n"
 		"   Texcoords = texcoords;\n"
-		"   vec2 scale = vec2(0.05, 0.05);\n"
+		"   vec2 scale = vec2(0.5, 0.5);\n"
 		"   gl_Position = vec4(scale.x * pos.x + offset.x, scale.y * pos.y + offset.y, pos.z, 1.0);\n"
 		"}\n";
 	const char* fragment_shader_src =
@@ -233,7 +233,7 @@ GLuint load_texture(GLuint shader_program) {
 	GLsizei height = 2;
 
 	int x, y, n;
-	unsigned char* p = stbi_load("fire.png", &x, &y, &n, 0);
+	unsigned char* p = stbi_load("eggplant.png", &x, &y, &n, 0);
 	//float pixels[] = {
 	//	0.0f, 0.0f, 0.0f,	1.0f, 1.0f, 1.0f, // r, g, b,   r, g, b
 	//	1.0f, 1.0f, 1.0f,	0.0f, 0.0f, 0.0f, // r, g, b,   r, g, b
@@ -291,8 +291,8 @@ int main(void) {
 	float time = 0;
 	float oldtime = 0;
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE);
-	/*glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+	//glBlendFunc(GL_ONE, GL_ONE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 
 	for (int i = 0; i < 100; i++) {
@@ -311,12 +311,14 @@ int main(void) {
 			particles[i].x += particles[i].xspeed * dt;
 			particles[i].y += particles[i].yspeed * dt;
 			particles[i].timer -= dt;
-			if (particles[i].isTrail == false) {
+
+			/*if (particles[i].isTrail == false) {
 				particles.push_back(randomthing(particles[i].x, particles[i].y, true));
 			}
 			if (particles[i].isTrail == true) {
-				particles[i].a -= 0.2;
-			}
+				particles[i].a -= 0.5;
+			}*/
+
 			//delete from array while itterating
 			if (particles[i].x > 1.0 ) {
 				particles[i].xspeed = 0.9 * -abs(particles[i].xspeed);
