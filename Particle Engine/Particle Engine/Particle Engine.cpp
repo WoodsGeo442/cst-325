@@ -2,12 +2,17 @@
 //
 
 #define GLEW_STATIC
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_ASSERT(x)
+#include "stb_image.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <vector>
 
 using namespace std;
+
+GLuint tex;
 
 struct randomthing {
 	float x;
@@ -18,25 +23,30 @@ struct randomthing {
 	float b;
 	float a;
 
-	float xspeed = 0.1;
-	float yspeed = 0.1;
+	float xspeed = 0.5;
+	float yspeed = 0.5;
 	float yacc= -0.5;
 
-	randomthing(float X, float Y) {
+	float timer = 5.0;
+
+	bool isTrail = false;
+
+	randomthing(float X, float Y, bool istrail) {
 		x = X;
 		y = Y;
-		this->xspeed = 1.5 * (float)rand() / (float)RAND_MAX;
-		this->yspeed = 1.5 * (float)rand() / (float)RAND_MAX;
+		this->isTrail = istrail;
+		this->xspeed = 0.5 * (float)rand() / (float)RAND_MAX;
+		this->yspeed = 0.5 * (float)rand() / (float)RAND_MAX;
 		this->a = 1;
 		this->r = 0.4f;
 		this->b = 0.1f;
 		this->g = 0.0f;
+		if (istrail == true) {
+			xspeed = 0;
+			yspeed = 0;
+		}
 	}
 };
-
-//GLuint load_textures() {
-//
-//}
 
 GLFWwindow* initialize_glfw() {
 	// Initialize the context
@@ -73,9 +83,12 @@ GLuint compile_shader() {
 	// Define shader sourcecode
 	const char* vertex_shader_src =
 		"#version 330 core\n"
+		"layout (location = 1) in vec2 texcoords;\n"
 		"layout (location = 0) in vec3 pos;\n"
 		"uniform vec2 offset;\n"
+		"out vec2 Texcoords;\n"
 		"void main() {\n"
+		"   Texcoords = texcoords;\n"
 		"   vec2 scale = vec2(0.05, 0.05);\n"
 		"   gl_Position = vec4(scale.x * pos.x + offset.x, scale.y * pos.y + offset.y, pos.z, 1.0);\n"
 		"}\n";
@@ -84,10 +97,13 @@ GLuint compile_shader() {
 		"out vec4 FragColor;\n"
 		"uniform vec4 color;\n"
 		"uniform sampler2D tex;\n"
+		"in vec2 Texcoords;\n"
 		"void main() {\n"
 		"   vec2 uvs=vec2(gl_FragCoord)/100.0;\n"
-		"   FragColor=texture(tex,uvs);\n"
+		"   FragColor=texture(tex,Texcoords);\n"
+		//"   FragColor.a*=a;\n"
 		//"   FragColor = color;\n"
+		//set alpha 
 		"}\n";
 
 	// Define some vars
@@ -146,15 +162,17 @@ GLuint compile_shader() {
 
 void load_geometry(GLuint* vao, GLuint* vbo, GLsizei* vertex_count) {
 	// Send the vertex data to the GPU
+	GLsizei stride = 5 * sizeof(GLfloat);
 	{
 		// Generate the data on the CPU
 		GLfloat vertices[] = {
-			0.0f, 0.5f, 0.0f, // top center
-			0.5f, -0.5f, 0.0f, // bottom right
-			-0.5f, -0.5f, 0.0f, // bottom left
-			0.5f, 0.0f, 0.0f,
-			-0.5f, 0.0f, 0.0f,
-			0.0f, -1.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,   0.0, 1.0,// top center
+			0.0f, 0.0f, 0.0f,  0.0, 0.0,// bottom right
+			1.0f, 0.0f, 0.0f,  1.0, 0.0,// bottom left
+
+			0.0f, 1.0f, 0.0f,   0.0, 1.0,
+			1.0f, 1.0f, 0.0f,  1.0, 1.0,
+			1.0f, 0.0f, 0.0f,  1.0, 0.0,
 		};
 		*vertex_count = sizeof(vertices) / sizeof(vertices[0]);
 
@@ -171,6 +189,7 @@ void load_geometry(GLuint* vao, GLuint* vbo, GLsizei* vertex_count) {
 
 	// Tell the GPU how to interpret our existing vertex data
 	{
+
 		// Create a Vertex Array Object to hold the settings
 		glGenVertexArrays(1, vao);
 
@@ -178,11 +197,53 @@ void load_geometry(GLuint* vao, GLuint* vbo, GLsizei* vertex_count) {
 		glBindVertexArray(*vao);
 
 		// Tell OpenGL the settings for the current 0th vertex array!
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+		glVertexAttribPointer(
+			0, // index
+			3, // size
+			GL_FLOAT, // type
+			GL_FALSE, // normalized
+			stride, // stride (how far to the next repetition)
+			(void*)0 // first component
+		);
+		glVertexAttribPointer(
+			1, // index
+			2, // size
+			GL_FLOAT, // type
+			GL_FALSE, // normalized
+			stride, // stride (how far to the next repetition)
+			(void*)(3 * sizeof(GLfloat)) // first component
+		);
 
 		// Enable the 0th vertex attrib array!
 		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
 	}
+}
+
+GLuint load_texture(GLuint shader_program) {
+	glActiveTexture(GL_TEXTURE0);
+	GLuint tex;
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	GLsizei width = 2;
+	GLsizei height = 2;
+
+	int x, y, n;
+	unsigned char* p = stbi_load("fire.png", &x, &y, &n, 0);
+	//float pixels[] = {
+	//	0.0f, 0.0f, 0.0f,	1.0f, 1.0f, 1.0f, // r, g, b,   r, g, b
+	//	1.0f, 1.0f, 1.0f,	0.0f, 0.0f, 0.0f, // r, g, b,   r, g, b
+	//};
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, p);
+	GLuint tex_location = glGetUniformLocation(shader_program, "tex");
+	glUniform1i(tex_location, 0);
+
+	return tex;
 }
 
 void render_scene(GLFWwindow* window, GLsizei vertex_count, GLuint shader_program, vector<randomthing> particles) {
@@ -211,11 +272,11 @@ void render_scene(GLFWwindow* window, GLsizei vertex_count, GLuint shader_progra
 	glfwSwapBuffers(window);
 }
 
-void cleanup(GLFWwindow* window/*, GLuint *shader_program, GLuint texture, GLuint vao, GLuint vbo*/) {
+void cleanup(GLFWwindow* window/*, GLuint *shader_program*/, GLuint load_texture/*, GLuint vao, GLuint vbo*/) {
 	/*glDeleteProgram(*shader_program);
 	glDeleteVertexArrays(1, &vao);
-	glDeleteBuffers(1, &vbo);
-	glDeleteTextures(1, &texture);*/
+	glDeleteBuffers(1, &vbo);*/
+	glDeleteTextures(1, &tex);
 	glfwTerminate();
 }
 
@@ -226,12 +287,16 @@ int main(void) {
 	vector<randomthing> particles;
 	GLFWwindow* window = initialize_glfw();
 	GLuint shader_program = compile_shader();
-	//GLuint texture = load_texture();
+	GLuint texture = load_texture(shader_program);
 	float time = 0;
 	float oldtime = 0;
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	/*glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 	
+
 	for (int i = 0; i < 100; i++) {
-		particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+		particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, false));
 	}
 
 	load_geometry(&vao, &vbo, &vertex_count);
@@ -245,6 +310,14 @@ int main(void) {
 			particles[i].yspeed += particles[i].yacc * dt;
 			particles[i].x += particles[i].xspeed * dt;
 			particles[i].y += particles[i].yspeed * dt;
+			particles[i].timer -= dt;
+			if (particles[i].isTrail == false) {
+				particles.push_back(randomthing(particles[i].x, particles[i].y, true));
+			}
+			if (particles[i].isTrail == true) {
+				particles[i].a -= 0.2;
+			}
+			//delete from array while itterating
 			if (particles[i].x > 1.0 ) {
 				particles[i].xspeed = 0.9 * -abs(particles[i].xspeed);
 				//particles[i].a -= 0.5;
@@ -275,7 +348,7 @@ int main(void) {
 		glfwPollEvents();
 	}
 
-	cleanup(window);
+	cleanup(window, load_texture(shader_program));
 	return 0;
 }
 
