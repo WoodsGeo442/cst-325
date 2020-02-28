@@ -89,7 +89,7 @@ GLuint compile_shader() {
 		"out vec2 Texcoords;\n"
 		"void main() {\n"
 		"   Texcoords = texcoords;\n"
-		"   vec2 scale = vec2(0.5, 0.5);\n"
+		"   vec2 scale = vec2(0.2, 0.2);\n"
 		"   gl_Position = vec4(scale.x * pos.x + offset.x, scale.y * pos.y + offset.y, pos.z, 1.0);\n"
 		"}\n";
 	const char* fragment_shader_src =
@@ -233,11 +233,7 @@ GLuint load_texture(GLuint shader_program) {
 	GLsizei height = 2;
 
 	int x, y, n;
-	unsigned char* p = stbi_load("eggplant.png", &x, &y, &n, 0);
-	//float pixels[] = {
-	//	0.0f, 0.0f, 0.0f,	1.0f, 1.0f, 1.0f, // r, g, b,   r, g, b
-	//	1.0f, 1.0f, 1.0f,	0.0f, 0.0f, 0.0f, // r, g, b,   r, g, b
-	//};
+	unsigned char* p = stbi_load("fire.png", &x, &y, &n, 0);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, p);
 	GLuint tex_location = glGetUniformLocation(shader_program, "tex");
@@ -290,8 +286,12 @@ int main(void) {
 	GLuint texture = load_texture(shader_program);
 	float time = 0;
 	float oldtime = 0;
+
 	glEnable(GL_BLEND);
+
+	// makes the colors brighter and overlaps
 	//glBlendFunc(GL_ONE, GL_ONE);
+
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 
@@ -343,7 +343,6 @@ int main(void) {
 				//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
 			}
 		}
-		// add pushback
 		
 		render_scene(window, vertex_count, shader_program, particles);
 		oldtime = time;
@@ -353,14 +352,3 @@ int main(void) {
 	cleanup(window, load_texture(shader_program));
 	return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
