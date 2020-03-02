@@ -1,0 +1,6 @@
+Render and least 100 particles (4pts) - done
+Move the particles independently (4pts) - done
+Give each particle a texture (3pts) - done
+Interact with the window (2pts) - done
+Added a gravity effect to make the particles slowly come to a stop
+
