@@ -1,9 +1,7 @@
 ﻿  Particle Engine.cpp
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(38,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(39,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(305,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(324,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(330,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(335,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\Particle Engine\Particle Engine.cpp(341,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  Particle Engine.vcxproj -> C:\Users\woods\Documents\GitHub\cst-325\Particle Engine\x64\Debug\Particle Engine.exe
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine - Copy\Particle Engine\Particle Engine.cpp(40,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine - Copy\Particle Engine\Particle Engine.cpp(41,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine - Copy\Particle Engine\Particle Engine.cpp(62,20): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine - Copy\Particle Engine\Particle Engine.cpp(62,14): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine - Copy\Particle Engine\Particle Engine.cpp(411,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Particle Engine.vcxproj -> C:\Users\woods\Documents\GitHub\cst-325\Particle Engine - Copy\x64\Debug\Particle Engine.exe

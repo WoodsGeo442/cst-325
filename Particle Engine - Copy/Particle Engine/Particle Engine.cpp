@@ -5,6 +5,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ASSERT(x)
 #include "stb_image.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -15,8 +17,9 @@ using namespace std;
 GLuint tex;
 
 struct randomthing {
-	float x;
-	float y;
+	/*float x;
+	float y;*/
+	glm::mat4 world_from_model = glm::mat4(1.0);
 
 	float r;
 	float g;
@@ -32,8 +35,7 @@ struct randomthing {
 	bool isTrail = false;
 
 	randomthing(float X, float Y, bool istrail) {
-		x = X;
-		y = Y;
+		glm::translate(this->world_from_model, glm::vec3(X, Y, 0.0f));
 		this->isTrail = istrail;
 		this->xspeed = 0.5 * (float)rand() / (float)RAND_MAX;
 		this->yspeed = 0.5 * (float)rand() / (float)RAND_MAX;
@@ -46,6 +48,27 @@ struct randomthing {
 			yspeed = 0;
 		}
 	}
+};
+
+struct Camera {
+	glm::mat4 camera_from_world = glm::mat4(1.0);
+	float fov = 10.0f;
+	float near = 0.1f;
+	float far = 100.0f;
+
+	glm::mat4 view_from_camera(GLFWwindow* window ){
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+		glViewport(0.0f, 0.0f, width, height);
+		return glm::perspective(
+			glm::radians(this-> fov),
+			(float)width / (float)height, // aspect ratio
+			this-> near, // near
+			this-> far // far
+			);
+	}
+
+
 };
 
 GLFWwindow* initialize_glfw() {
@@ -85,12 +108,18 @@ GLuint compile_shader() {
 		"#version 330 core\n"
 		"layout (location = 1) in vec2 texcoords;\n"
 		"layout (location = 0) in vec3 pos;\n"
-		"uniform vec2 offset;\n"
+		/*"uniform vec2 offset;\n"*/
+		"uniform mat4 camera_from_world;\n"
+		"uniform mat4 view_from_camera;\n"
+		"uniform mat4 world_from_model;\n"
 		"out vec2 Texcoords;\n"
 		"void main() {\n"
 		"   Texcoords = texcoords;\n"
 		"   vec2 scale = vec2(0.2, 0.2);\n"
-		"   gl_Position = vec4(scale.x * pos.x + offset.x, scale.y * pos.y + offset.y, pos.z, 1.0);\n"
+		//"   gl_Position = vec4(scale.x * pos.x + offset.x, scale.y * pos.y + offset.y, pos.z, 1.0);\n"
+		//"   gl_Position = camera_from_world * vec4(pos.xyz, 1.0);"
+		"   gl_Position = view_from_camera * camera_from_world * world_from_model * vec4(pos, 1.0);\n"
+
 		"}\n";
 	const char* fragment_shader_src =
 		"#version 330 core\n"
@@ -166,14 +195,49 @@ void load_geometry(GLuint* vao, GLuint* vbo, GLsizei* vertex_count) {
 	{
 		// Generate the data on the CPU
 		GLfloat vertices[] = {
-			0.0f, 1.0f, 0.0f,   0.0, 1.0,// top center
-			0.0f, 0.0f, 0.0f,  0.0, 0.0,// bottom right
-			1.0f, 0.0f, 0.0f,  1.0, 0.0,// bottom left
+			0.0f,  0.0f, 0.0f, 	10.0, 10.0,
+			0.0f,  1.0f, 0.0f, 	10.0, 0.0,
+			1.0f,  1.0f, 0.0f, 	0.0, 0.0,
+			0.0f,  0.0f, 0.0f, 	10.0, 10.0,
+			1.0f,  0.0f, 0.0f, 	10.0, 0.0,
+			1.0f,  1.0f, 0.0f, 	0.0, 0.0,
 
-			0.0f, 1.0f, 0.0f,   0.0, 1.0,
-			1.0f, 1.0f, 0.0f,  1.0, 1.0,
-			1.0f, 0.0f, 0.0f,  1.0, 0.0,
+			0.0f,  0.0f, 1.0f, 	10.0, 10.0,
+			0.0f,  1.0f, 1.0f, 	10.0, 0.0,
+			1.0f,  1.0f, 1.0f, 	0.0, 0.0,
+			0.0f,  0.0f, 1.0f, 	10.0, 10.0,
+			1.0f,  0.0f, 1.0f, 	10.0, 0.0,
+			1.0f,  1.0f, 1.0f, 	0.0, 0.0,
+
+			1.0f, 0.0f,  0.0f, 	10.0, 10.0,
+			1.0f, 0.0f,  1.0f, 	10.0, 0.0,
+			1.0f, 1.0f,  1.0f, 	0.0, 0.0,
+			1.0f, 0.0f,  0.0f, 	10.0, 10.0,
+			1.0f, 1.0f,  0.0f, 	10.0, 0.0,
+			1.0f, 1.0f,  1.0f, 	0.0, 0.0,
+
+			0.0f, 0.0f,  0.0f, 	10.0, 10.0,
+			0.0f, 0.0f,  1.0f, 	10.0, 0.0,
+			0.0f, 1.0f,  1.0f, 	0.0, 0.0,
+			0.0f, 0.0f,  0.0f, 	10.0, 10.0,
+			0.0f, 1.0f,  0.0f, 	10.0, 0.0,
+			0.0f, 1.0f,  1.0f, 	0.0, 0.0,
+
+			0.0f, 0.0f, 0.0f, 	10.0, 10.0,
+			0.0f, 0.0f, 1.0f, 	10.0, 0.0,
+			1.0f, 0.0f, 1.0f, 	0.0, 0.0,
+			0.0f, 0.0f, 0.0f, 	10.0, 10.0,
+			1.0f, 0.0f, 0.0f, 	10.0, 0.0,
+			1.0f, 0.0f, 1.0f, 	0.0, 0.0,
+
+			0.0f, 1.0f, 0.0f, 	10.0, 10.0,
+			0.0f, 1.0f, 1.0f, 	10.0, 0.0,
+			1.0f, 1.0f, 1.0f, 	0.0, 0.0,
+			0.0f, 1.0f, 0.0f, 	10.0, 10.0,
+			1.0f, 1.0f, 0.0f, 	10.0, 0.0,
+			1.0f, 1.0f, 1.0f, 	0.0, 0.0,
 		};
+
 		*vertex_count = sizeof(vertices) / sizeof(vertices[0]);
 
 		// Use OpenGL to store it on the GPU
@@ -242,9 +306,29 @@ GLuint load_texture(GLuint shader_program) {
 	return tex;
 }
 
-void render_scene(GLFWwindow* window, GLsizei vertex_count, GLuint shader_program, vector<randomthing> particles) {
+void render_scene(GLFWwindow* window, GLsizei vertex_count, Camera cam, GLuint shader_program, vector<randomthing> &particles) {
 	// Set the clear color
 	glClearColor(0.7f, 0.0f, 0.5f, 1.0f);
+
+	GLint world_to_camera_location = glGetUniformLocation(shader_program, "camera_from_world");
+	glUniformMatrix4fv(
+		world_to_camera_location,
+		1, // count
+		GL_FALSE, // transpose
+		glm::value_ptr(cam.camera_from_world)
+	);
+
+	GLint view_from_camera_location = glGetUniformLocation(shader_program, "view_from_camera");
+	glUniformMatrix4fv(
+		view_from_camera_location,
+		1, // count
+		GL_FALSE, // transpose
+		glm::value_ptr(cam.view_from_camera(window))
+	);
+	
+	
+
+
 
 	// Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -256,11 +340,27 @@ void render_scene(GLFWwindow* window, GLsizei vertex_count, GLuint shader_progra
 		glUniform4f(color_location, 0.0f, 0.0f, 0.0f, 1.0f);
 
 		//position
-		GLint offset_location = glGetUniformLocation(shader_program, "offset");
-		glUniform2f(offset_location, particles[i].x, particles[i].y);
+		/*GLint offset_location = glGetUniformLocation(shader_program, "offset");
+		glUniform2f(offset_location, particles[i].x, particles[i].y);*/
+
+		particles[i].world_from_model = glm::translate(particles[i].world_from_model, glm::vec3(0.0f, 0.0f, 0.10f));
+
+		particles[i].world_from_model = glm::rotate(particles[i].world_from_model, 0.1f, glm::vec3(1.0f, 1.0f, 0.0f));
+
+		GLint world_from_model_location = glGetUniformLocation(shader_program, "world_from_model");
+		glUniformMatrix4fv(
+			world_from_model_location,
+			1,//count
+			GL_FALSE, //transpose
+			glm::value_ptr(particles[i].world_from_model)
+		);
+
+		
 
 		// Draw the current vao/vbo, with the current shader
 		glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+
+		
 	}
 	
 
@@ -276,6 +376,8 @@ void cleanup(GLFWwindow* window/*, GLuint *shader_program*/, GLuint load_texture
 	glfwTerminate();
 }
 
+
+
 int main(void) {
 	GLuint vao;
 	GLuint vbo;
@@ -286,6 +388,10 @@ int main(void) {
 	GLuint texture = load_texture(shader_program);
 	float time = 0;
 	float oldtime = 0;
+		
+		
+	Camera cam;
+	cam.camera_from_world = glm::translate(cam.camera_from_world, glm::vec3(0.0f, 0.0f, -20.0f));
 
 	glEnable(GL_BLEND);
 
@@ -298,7 +404,7 @@ int main(void) {
 	for (int i = 0; i < 100; i++) {
 		particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, false));
 	}
-
+	
 	load_geometry(&vao, &vbo, &vertex_count);
 
 	while (!glfwWindowShouldClose(window)) {
@@ -308,8 +414,9 @@ int main(void) {
 		
 		for (int i = 0; i < particles.size(); i++) {
 			particles[i].yspeed += particles[i].yacc * dt;
-			particles[i].x += particles[i].xspeed * dt;
-			particles[i].y += particles[i].yspeed * dt;
+			particles[i].world_from_model = glm::translate(particles[i].world_from_model, glm::vec3(particles[i].xspeed * dt, particles[i].yspeed * dt, 0.0f));
+			/*particles[i].x += particles[i].xspeed * dt;
+			particles[i].y += particles[i].yspeed * dt;*/
 			particles[i].timer -= dt;
 
 			/*if (particles[i].isTrail == false) {
@@ -319,32 +426,32 @@ int main(void) {
 				particles[i].a -= 0.5;
 			}*/
 
-			//delete from array while itterating
-			if (particles[i].x > 1.0 ) {
-				particles[i].xspeed = 0.9 * -abs(particles[i].xspeed);
-				//particles[i].a -= 0.5;
-				//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
-				
-			} 
-			if (particles[i].x < -1.0) {
-				particles[i].xspeed = 0.9 * abs(particles[i].xspeed);
-				//particles[i].a -= 0.2;
-				//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
-			}
-			if (particles[i].y > 1.0) {
-				particles[i].yspeed = 0.9 * -abs(particles[i].yspeed);
-				//particles[i].a -= 0.2;
-				//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
-				
-			}
-			if (particles[i].y < -1.0) {
-				particles[i].yspeed = 0.9 * abs(particles[i].yspeed);
-				//particles[i].a -= 0.2;
-				//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
-			}
+			////delete from array while itterating
+			//if (particles[i].x > 1.0 ) {
+			//	particles[i].xspeed = 0.9 * -abs(particles[i].xspeed);
+			//	//particles[i].a -= 0.5;
+			//	//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+			//	
+			//} 
+			//if (particles[i].x < -1.0) {
+			//	particles[i].xspeed = 0.9 * abs(particles[i].xspeed);
+			//	//particles[i].a -= 0.2;
+			//	//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+			//}
+			//if (particles[i].y > 1.0) {
+			//	particles[i].yspeed = 0.9 * -abs(particles[i].yspeed);
+			//	//particles[i].a -= 0.2;
+			//	//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+			//	
+			//}
+			//if (particles[i].y < -1.0) {
+			//	particles[i].yspeed = 0.9 * abs(particles[i].yspeed);
+			//	//particles[i].a -= 0.2;
+			//	//particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX));
+			//}
 		}
-		
-		render_scene(window, vertex_count, shader_program, particles);
+		cam.camera_from_world = glm::translate(cam.camera_from_world, glm::vec3(0.001f, 0.0f, 0.001f));
+		render_scene(window, vertex_count, cam ,shader_program, particles);
 		oldtime = time;
 		glfwPollEvents();
 	}
