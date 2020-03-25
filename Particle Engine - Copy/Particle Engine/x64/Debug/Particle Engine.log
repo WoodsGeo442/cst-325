@@ -1,3 +1,3 @@
-﻿﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(441,5): warning MSB8003: The WindowsSDKDir property is not defined. Some build tools may not be found.
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(449,5): warning MSB8003: The WindowsSDKDir property is not defined. Some build tools may not be found.
   Particle Engine.cpp
-C:\Users\woods\Documents\GitHub\cst-325\Particle Engine - Copy\Particle Engine\stb_image.h(324,10): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+C:\Users\woods\Documents\GitHub\cst-325\Particle Engine - Copy\Dependencies\glew-2.1.0\include\GL\glew.h(1205,14): fatal error C1083: Cannot open include file: 'GL/glu.h': No such file or directory

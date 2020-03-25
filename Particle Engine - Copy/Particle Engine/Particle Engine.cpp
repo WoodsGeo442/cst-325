@@ -443,6 +443,8 @@
 //	return 0;
 //}
 
+
+
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ASSERT(x)
 #define GLEW_STATIC
@@ -457,6 +459,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp" 
 #include <algorithm>
+
 using namespace std;
 struct Model
 {
@@ -726,7 +729,7 @@ int main(void)
     particles.push_back(Particle(
         glm::translate(glm::mat4(1), glm::vec3(-0.5f, -0.5f, 0.0f)),
         glm::vec3(0.0f, 0.0f, 0.0f)
-    ));
+        ));
     //cube
     Camera camera;
     //glm::mat4 camera_from_world = glm::mat4(1);
