@@ -451,15 +451,14 @@
 #include <GL/glew.h>
 #include <GLFW\glfw3.h>
 #include <iostream>
-#include <vector>
+#include<vector>
 #include <ostream>
-#include <fstream>
-#include <sstream>
-#include <string>
+#include<fstream>
+#include<sstream>
+#include<string>
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp" 
-#include <algorithm>
-
+#include<algorithm>
 using namespace std;
 struct Model
 {
