@@ -1,16 +1,20 @@
 // Particle Engine.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-//#define GLEW_STATIC
 //#define STB_IMAGE_IMPLEMENTATION
 //#define STBI_ASSERT(x)
-//#include "stb_image.h"
-//#include "glm/glm.hpp"
-//#include "glm/gtc/type_ptr.hpp"
+//#define GLEW_STATIC
 //#include <GL/glew.h>
-//#include <GLFW/glfw3.h>
+//#include <GLFW\glfw3.h>
 //#include <iostream>
 //#include <vector>
+//#include <iostream>
+//#include <fstream>
+//#include <sstream>
+//#include <string>
+//#include "glm/glm.hpp"
+//#include "glm/gtc/type_ptr.hpp" 
+//#include<algorithm>
 //
 //using namespace std;
 //
@@ -23,12 +27,98 @@
 //	GLsizei vertex_count;
 //
 //	void draw(){
+//        glBindVertexArray(this->vao);
+//        glDrawArrays(GL_TRIANGLES, 0, this->vertex_count);
+//    }
 //
-//	}
+//    static Model load(){
+//        Model model;
+//        vector<GLfloat> vertices;
+//        {
+//            //load geometry from file
+//            {
+//                fstream file("teapot.obj");
+//                if (!file)
+//                {
+//                    cout << "could not find model file\n";
+//                    abort();
+//                }
+//                vector<glm::vec3> positions;
+//                vector<glm::vec2> texcoords;
+//                string line;
+//                while (getline(file, line))
+//                {
+//                    //cout << line << "\n";
+//                    istringstream line_stream(line);
+//                    string type;
+//                    line_stream >> type;
+//                    if (type == "v")
+//                    {
+//                        GLfloat x, y, z;
+//                        line_stream >> x;
+//                        line_stream >> y;
+//                        line_stream >> z;
+//                        positions.push_back(glm::vec3(x, y, z));
+//                    }
+//                    else if (type == "vt")
+//                    {
+//                        GLfloat u, v;
+//                        line_stream >> u;
+//                        line_stream >> v;
+//                        texcoords.push_back(glm::vec2(u, v));
+//                    }
+//                    else if (type == "f")
+//                    {
+//                        string face;
+//                        for (int i = 0; i < 3; i++)
+//                        {
+//                            line_stream >> face;
+//                            replace(face.begin(), face.end(), '/', ' ');
+//                            size_t position_index;
+//                            size_t texcoord_index;
+//                            istringstream face_stream(face);
+//                            face_stream >> position_index;
+//                            face_stream >> texcoord_index;
+//                            glm::vec3 position = positions.at(position_index - 1);
+//                            glm::vec2 texcoord = texcoords.at(texcoord_index - 1);
+//                            vertices.push_back(position.x);
+//                            vertices.push_back(position.y);
+//                            vertices.push_back(position.z);
+//                            vertices.push_back(texcoord.x);
+//                            vertices.push_back(texcoord.y);
+//                        }
+//                    }
+//                }
+//            }
+//            model.vertex_count = vertices.size();
+//            {
+//                //create vertex buffer object on GPU
+//                glGenBuffers(1, &model.vbo);
+//                //set to current buffer 
+//                glBindBuffer(GL_ARRAY_BUFFER, model.vbo);
+//                //copy data to current buffer
+//                glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+//            }
+//        }
+//        {
+//            //create VAO
+//            glGenVertexArrays(1, &model.vao);
+//            //set as current vertex array
+//            glBindVertexArray(model.vao);
+//            GLsizei stride = 5 * sizeof(GLfloat);
+//            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
+//            glEnableVertexAttribArray(0);
+//            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(GLfloat)));
+//            glEnableVertexAttribArray(1);
+//        }
+//        return model;
+//    }
+//
 //};
+//
 //struct randomthing {
-//	/*float x;
-//	float y;*/
+//	float x;
+//	float y;
 //	glm::mat4 world_from_model = glm::mat4(1.0);
 //
 //	float r;
@@ -110,7 +200,6 @@
 //
 //	return window;
 //}
-//
 //
 //GLuint compile_shader() {
 //	// Define shader sourcecode
@@ -198,7 +287,6 @@
 //	return shader_program;
 //}
 //
-//
 //Model load_geometry() {
 //	// Send the vertex data to the GPU
 //	Model model;
@@ -249,7 +337,7 @@
 //			1.0f, 1.0f, 1.0f, 	0.0, 0.0,
 //		};
 //
-//		*vertex_count = sizeof(vertices) / sizeof(vertices[0]);
+//		model.vertex_count = sizeof(vertices) / sizeof(vertices[0]);
 //
 //		// Use OpenGL to store it on the GPU
 //		{
@@ -383,10 +471,10 @@
 //	glfwSwapBuffers(window);
 //}
 //
-//void cleanup(GLFWwindow* window/*, GLuint *shader_program*/, GLuint load_texture/*, GLuint vao, GLuint vbo*/) {
-//	/*glDeleteProgram(*shader_program);
-//	glDeleteVertexArrays(1, &vao);
-//	glDeleteBuffers(1, &vbo);*/
+//void cleanup(GLuint shader_program, GLuint load_texture, Model model) {
+//	glDeleteProgram(shader_program);
+//	glDeleteVertexArrays(1, &model.vao);
+//	glDeleteBuffers(1, &model.vbo);
 //	glDeleteTextures(1, &tex);
 //	glfwTerminate();
 //}
@@ -398,6 +486,7 @@
 //	GLFWwindow* window = initialize_glfw();
 //	GLuint shader_program = compile_shader();
 //	GLuint texture = load_texture(shader_program);
+//    Model model = load_geometry();
 //	float time = 0;
 //	float oldtime = 0;
 //		
@@ -417,7 +506,7 @@
 //		particles.push_back(randomthing((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, false));
 //	}
 //	
-//	Model model = load_geometry();
+//	
 //
 //	while (!glfwWindowShouldClose(window)) {
 //		time = glfwGetTime();
@@ -439,7 +528,7 @@
 //		glfwPollEvents();
 //	}
 //
-//	cleanup(window, load_texture(shader_program));
+//	cleanup(load_texture(shader_program), shader_program, model);
 //	return 0;
 //}
 
@@ -451,14 +540,14 @@
 #include <GL/glew.h>
 #include <GLFW\glfw3.h>
 #include <iostream>
-#include<vector>
-#include <ostream>
-#include<fstream>
-#include<sstream>
-#include<string>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp" 
-#include<algorithm>
+#include <algorithm>
 using namespace std;
 struct Model
 {
@@ -479,6 +568,7 @@ struct Model
                     abort();
                 }
                 vector<glm::vec3> positions;
+                vector<glm::vec3> normals;
                 vector<glm::vec2> texcoords;
                 string line;
                 while (getline(file, line))
@@ -494,6 +584,14 @@ struct Model
                         line_stream >> y;
                         line_stream >> z;
                         positions.push_back(glm::vec3(x, y, z));
+                    }
+                    else if (type == "vn")
+                    {
+                        GLfloat x, y, z;
+                        line_stream >> x;
+                        line_stream >> y;
+                        line_stream >> z;
+                        normals.push_back(glm::vec3(x, y, z));
                     }
                     else if (type == "vt")
                     {
@@ -511,16 +609,25 @@ struct Model
                             replace(face.begin(), face.end(), '/', ' ');
                             size_t position_index;
                             size_t texcoord_index;
+                            size_t normal_index;
+
                             istringstream face_stream(face);
                             face_stream >> position_index;
                             face_stream >> texcoord_index;
+                            face_stream >> normal_index;
+
                             glm::vec3 position = positions.at(position_index - 1);
                             glm::vec2 texcoord = texcoords.at(texcoord_index - 1);
+                            glm::vec3 normal = normals.at(normal_index - 1);
+
                             vertices.push_back(position.x);
                             vertices.push_back(position.y);
                             vertices.push_back(position.z);
                             vertices.push_back(texcoord.x);
                             vertices.push_back(texcoord.y);
+                            vertices.push_back(normal.x);
+                            vertices.push_back(normal.y);
+                            vertices.push_back(normal.z);
                         }
                     }
                 }
@@ -544,6 +651,10 @@ struct Model
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(GLfloat)));
+            glEnableVertexAttribArray(1);
+
+           //edit this later
+            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(GLfloat)));
             glEnableVertexAttribArray(1);
         }
         return model;
@@ -640,13 +751,20 @@ GLuint compiler_shader()
         "#version 330 core\n"
         "layout (location = 0) in vec3 pos;\n"
         "layout(location=1) in vec2 texcoords;\n"
+
+        "layout(location=2) in vec3 normal;\n"
+        
         "out vec2 Texcoords;\n"
+
+        "out vec3 Normal;\n"
+
         "uniform vec2 offset;\n"
         "uniform mat4 camera_from_world;\n"
         "uniform mat4 view_from_camera;\n"
         "uniform mat4 world_from_model;\n"
         "void main(){\n"
         "Texcoords = texcoords;"
+        "Normal = normal;"
         "gl_Position = view_from_camera*camera_from_world*world_from_model*vec4(pos, 1.0);\n"
         "}\n";
     //fragment shader
@@ -657,7 +775,13 @@ GLuint compiler_shader()
         "uniform vec4 color;\n"
         "uniform sampler2D tex;\n"
         "void main(){\n"
-        "FragColor = texture(tex, Texcoords);\n"
+        
+        "   vec3 ambient = vec3("
+
+            /*"FragColor = texture(tex, Texcoords);\n"*/
+        "   float fog = gl_FragCoord.z / gl_FragCoord.w;"
+        /*"   FragColor = vec4(0.05 * vec3(fog), 1.0);\n"*/
+        "   FragColor = vec4(0.5 * (Normal + vec3(1.0)), 1.0);\n"
         "}\n";
     //compile vertex
     GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -699,7 +823,7 @@ void render_scene(GLFWwindow* window, Model model, GLuint shader_program, vector
     for (Particle& particle : particles)
     {
         particle.world_from_model = glm::translate(particle.world_from_model, particle.velocity);
-        particle.world_from_model = glm::rotate(particle.world_from_model, 0.01f, glm::vec3(1.0f, 1.0f, 1.0f));
+        particle.world_from_model = glm::rotate(particle.world_from_model, 0.0001f, glm::vec3(1.0f, 1.0f, 1.0f));
         GLint world_from_model_location = glGetUniformLocation(shader_program, "world_from_model");
         glUniformMatrix4fv(world_from_model_location, 1, GL_FALSE, glm::value_ptr(particle.world_from_model));
         glm::vec4 position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -726,7 +850,7 @@ int main(void)
     vector<Particle> particles;
     //teapot 
     particles.push_back(Particle(
-        glm::translate(glm::mat4(1), glm::vec3(-0.5f, -0.5f, 0.0f)),
+        glm::translate(glm::mat4(1), glm::vec3(-0.2f, -0.2f, 0.0f)),
         glm::vec3(0.0f, 0.0f, 0.0f)
         ));
     //cube
