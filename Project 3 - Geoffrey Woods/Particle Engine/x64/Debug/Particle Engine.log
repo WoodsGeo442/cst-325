@@ -1,0 +1,10 @@
+﻿  Particle Engine.cpp
+C:\Users\woods\Documents\GitHub\cst-325\Project 3 - Geoffrey Woods\Particle Engine\Particle Engine.cpp(34,20): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Project 3 - Geoffrey Woods\Particle Engine\Particle Engine.cpp(34,14): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Project 3 - Geoffrey Woods\Particle Engine\Particle Engine.cpp(122,1): warning C4267: '=': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Project 3 - Geoffrey Woods\Particle Engine\Particle Engine.cpp(213,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Project 3 - Geoffrey Woods\Particle Engine\Particle Engine.cpp(214,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Project 3 - Geoffrey Woods\Particle Engine\Particle Engine.cpp(497,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Project 3 - Geoffrey Woods\Particle Engine\Particle Engine.cpp(516,20): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+C:\Users\woods\Documents\GitHub\cst-325\Project 3 - Geoffrey Woods\Particle Engine\Particle Engine.cpp(516,14): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+  Particle Engine.vcxproj -> C:\Users\woods\Documents\GitHub\cst-325\Project 3 - Geoffrey Woods\x64\Debug\Particle Engine.exe

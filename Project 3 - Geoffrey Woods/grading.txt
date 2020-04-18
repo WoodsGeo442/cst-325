@@ -1,0 +1,9 @@
+Followed along with the presentation but no light showed.  If I can, I would like to resubmit to find out what I did wrong.
+
+Primary Objectives (10pts): 
+Ambient Lighting (2pts) - no
+Diffuse Lighting (5pts) - no
+Specular Lighting (3pts) - no
+
+Secondary Objectives (5pts):
+none
