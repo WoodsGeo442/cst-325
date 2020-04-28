@@ -23,6 +23,7 @@ GLuint tex;
 
 struct Camera {
 	glm::mat4 camera_from_world = glm::mat4(1);
+
 	float fov = 60.0f;
 	float near = 0.1f;
 	float far = 1000.0f;
@@ -35,6 +36,7 @@ struct Camera {
 		return glm::perspective(glm::radians(this->fov), float(width) / float(height), this->near, this->far);
 
 	}
+
 };
 
 struct Model {
@@ -95,12 +97,14 @@ struct Model {
 						istringstream face_stream(face);
 						size_t position_index;
 						size_t texcoord_index;
+						size_t normal_index;
 
 						face_stream >> position_index;
 						face_stream >> texcoord_index;
+						face_stream >> normal_index;
 
 						glm::vec3 position = positions.at(position_index - 1); // 1 based indices
-						glm::vec3 normal = positions.at(position_index - 1); // 1 based indices
+						glm::vec3 normal = normals.at(normal_index - 1); // 1 based indices
 						glm::vec2 texcoord = texcoords.at(texcoord_index - 1); // 1 based indices
 
 						vertices.push_back(position.x);
@@ -150,6 +154,7 @@ struct Model {
 				stride, // stride (how far to the next repetition)
 				(void*)0 // first component
 				);
+
 			glVertexAttribPointer(
 				1, // index
 				2, // size
@@ -190,6 +195,7 @@ struct Model {
 };
 
 struct randomthing {
+	glm::mat4 world_from_model = glm::mat4(1.0); // init to the identity matrix
 	float x;
 	float y;
 
@@ -200,6 +206,8 @@ struct randomthing {
 
 	float xspeed = 0.5;
 	float yspeed = 0.5;
+	float zspeed = 0.5;
+
 	float yacc = -0.5;
 
 	float timer = 5.0;
@@ -221,6 +229,9 @@ struct randomthing {
 			yspeed = 0;
 		}
 	}
+
+	
+
 };
 
 GLFWwindow* initialize_glfw() {
@@ -275,6 +286,7 @@ GLuint compile_shader() {
 		"out vec3 world_space_camera_position;\n"
 		"void main() {\n"
 		"   Texcoords = texcoords;\n"
+		/*"   Normal = normal;\n"*/
 		"   Normal = mat3(transpose(inverse(world_from_model))) * normal;\n"
 		"   vec2 scale = vec2(0.2, 0.2);\n"
 		"   world_space_position = vec3(world_from_model * vec4(pos, 1.0));\n"
@@ -289,7 +301,7 @@ GLuint compile_shader() {
 		"   gl_Position =  view_from_camera * camera_from_world * vec4(pos.xyz, 1.0);\n"
 
 		//use if offsetting
-		/*"   gl_Position = view_from_camera * camera_from_world * world_from_model * vec4(pos, 1.0);\n"*/
+		"   gl_Position = view_from_camera * camera_from_world * world_from_model * vec4(pos, 1.0);\n"
 
 		"}\n";
 	const char* fragment_shader_src =
@@ -301,29 +313,31 @@ GLuint compile_shader() {
 		"uniform vec4 color;\n"
 		"uniform sampler2D tex;\n"
 		"out vec4 FragColor;\n"
-		"out vec3 Normal;\n"
-		"out vec3 world_space_position;\n"
 		"void main() {\n"
-		"   vec3 light_dir = normalize(vec3(1.0, 1.0, 1.0));\n"
-		"	vec3 light_color = vec3(0.0, 0.5, 0.6);\n"
-
-		"   vec2 uvs=vec2(gl_FragCoord)/100.0;\n"
-		"   vec3 ambient = vec3(0.1, 0.05, 0.1);\n"
 		"   vec3 normal = normalize(Normal);\n"
+
+		//lighting settings
+		"   vec3 light_dir = normalize(vec3(1.0, 1.0, 1.0));\n"
+		"   vec3 light_color = vec3(0.7,0.5,0.5);\n "
+		"   vec3 specular_color = 0.2 * vec3(1.0,1.0,1.0);\n"
+
+
+		"   vec3 ambient = vec3(0.1, 0.1, 0.1);\n"
 		"   float diffuse_intensity = max(dot(normal, light_dir), 0.0);\n"
 		"   vec3 diffuse = light_color * diffuse_intensity;\n"
+
+		//Specular lighting
 		"   vec3 view_dir = normalize(world_space_camera_position - world_space_position);\n"
 		"   vec3 reflect_dir = reflect(-light_dir, normal);\n"
 		"   float specular_intensity = pow(max(dot(view_dir, reflect_dir), 0.0), 16);\n"
 		"   vec3 specular = specular_intensity * specular_color;\n"
-		/*"   FragColor=texture(tex,Texcoords);\n"*/
-		//"   FragColor.a*=a;\n"
-		/*"   FragColor = color;\n"*/
 
 		"   FragColor = vec4(0.5 * (Normal + vec3(1.0)), 1.0);\n"
 		"   FragColor = vec4(ambient, 1.0);\n"
 		"   FragColor = vec4(0.5 * (world_space_position + vec3(1.0)), 1.0);\n"
 		"   FragColor = vec4(ambient + diffuse, 1.0);\n"
+
+		//Using specullar lighting
 		"   FragColor = vec4(ambient + diffuse + specular, 1.0);\n"
 
 		"}\n";
@@ -431,8 +445,8 @@ void render_scene(GLFWwindow* window, Model model, GLuint shader_program, vector
 		glUniform4f(color_location, 0.31f, 0.31f, 0.31f, 1.0f);
 
 		//position
-		GLint offset_location = glGetUniformLocation(shader_program, "offset");
-		glUniform2f(offset_location, particles[i].x, particles[i].y);
+		GLint world_from_model = glGetUniformLocation(shader_program, "world_from_model");
+		glUniformMatrix4fv(world_from_model, 1, GL_FALSE, glm::value_ptr(particles[i].world_from_model));
 
 		// Draw the current vao/vbo, with the current shader
 		glDrawArrays(GL_TRIANGLES, 0, model.vertex_count);
@@ -458,6 +472,8 @@ void cleanup(GLFWwindow* window/*, GLuint *shader_program*/, GLuint load_texture
 
 //Add matrix for 3D
 glm::mat4 camera_from_world = glm::mat4(1.0); // init to the identity matrix
+glm::mat4 world_from_model = glm::mat4(1.0); // init to the identity matrix
+
 
 
 int main(void) {
@@ -474,15 +490,9 @@ int main(void) {
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	GLint world_to_camera_location = glGetUniformLocation(shader_program, "camera_from_world");
-	glUniformMatrix4fv(
-		world_to_camera_location,
-		1, // count
-		GL_FALSE, // transpose
-		glm::value_ptr(camera_from_world)
-		);
+	
 
-	camera_from_world = glm::translate(camera_from_world, glm::vec3(0.0f, 0.0f, -3.0f));
+	camera_from_world = glm::translate(camera_from_world, glm::vec3(0.0f, -1.5f, -8.0f));
 
 
 
@@ -500,6 +510,20 @@ int main(void) {
 		for (int i = 0; i < particles.size(); i++) {
 			particles[i].timer -= dt;
 
+			//move model itself
+			particles[i].world_from_model = glm::translate(particles[i].world_from_model, glm::vec3(
+				particles[i].xspeed * dt * 0,
+				particles[i].yspeed * dt * 0,
+				particles[i].zspeed * dt * 0
+				));
+
+			//rotate model itself
+			particles[i].world_from_model = glm::rotate(particles[i].world_from_model, 0.0001f, glm::vec3(
+				particles[i].xspeed * dt * 0,
+				particles[i].yspeed * dt,
+				particles[i].zspeed * dt * 0
+				));
+
 			//Move camera
 			/*camera_from_world = glm::translate(camera_from_world, glm::vec3(-0.00005f, 0.0f, 0.0f));*/
 
@@ -507,9 +531,12 @@ int main(void) {
 			/*camera_from_world = glm::translate(camera_from_world, glm::vec3(0.0f, 0.0f, -0.0001f));*/
 
 			//rotate camera
-			camera_from_world = glm::rotate(camera_from_world, 0.0001f, glm::vec3(0.0f, 0.0001f, 0.0f));
+			/*camera_from_world = glm::rotate(camera_from_world, 0.0001f, glm::vec3(0.0f, 0.0001f, 0.0f));*/
+
+
 
 		}
+		
 
 		int width, height;
 		glfwGetWindowSize(window, &width, &height);
@@ -539,18 +566,13 @@ int main(void) {
 			);
 
 		//use if moving object
-		//GLint world_from_model_location = glGetUniformLocation(shader_program, "world_from_model");
-		//glUniformMatrix4fv(
-		//	world_from_model_location,
-		//	1, // count
-		//	GL_FALSE, // transpose
-		//	glm::value_ptr(world_from_model)
-		//	);
-
-
-
-
-
+		GLint world_from_model_location = glGetUniformLocation(shader_program, "world_from_model");
+		glUniformMatrix4fv(
+			world_from_model_location,
+			1, // count
+			GL_FALSE, // transpose
+			glm::value_ptr(world_from_model)
+			);
 
 
 

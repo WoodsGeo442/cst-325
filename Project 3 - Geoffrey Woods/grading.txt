@@ -1,9 +1,11 @@
 Followed along with the presentation but no light showed.  If I can, I would like to resubmit to find out what I did wrong.
 
+4/21/2020 update - I got all the lighting to work!!!
+
 Primary Objectives (10pts): 
-Ambient Lighting (2pts) - no
-Diffuse Lighting (5pts) - no
-Specular Lighting (3pts) - no
+Ambient Lighting (2pts) - done
+Diffuse Lighting (5pts) - done
+Specular Lighting (3pts) - done
 
 Secondary Objectives (5pts):
 none
